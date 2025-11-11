@@ -20,8 +20,8 @@ Wokwi solo puede enviar señales a un servidor MQTT dedicado, en este caso `test
 
 Para ambos nodos, las señales se envían con los siguientes tópicos:
 
-```Temperatura: /ThinkIOT/temp```
-```Humedad: /ThinkIOT/hum```
+- ```Temperatura: /ThinkIOT/temp```
+- ```Humedad: /ThinkIOT/hum```
 
 Y se conectan al servidor MQTT de esta manera:
 
