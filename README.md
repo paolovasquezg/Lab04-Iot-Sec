@@ -6,11 +6,11 @@ En sí la implementación se ve como en la imagen de abajo. A manera de overview
 
 ![Arquitectura IoT](imagenes/1.png)
 
-
 ## Implementación
 
 Básicamente revisamos la implementación de cada parte de la arquitectura presentada anteriormente. Desde el envío de señales de los ESP32, hasta la lectura de las señales por parte de dispositivos dentro de la misma red local.
 
+---
 
 ### ESP32: Wokwi
 
@@ -33,6 +33,7 @@ const char* mqtt_server = "test.mosquitto.org";
 
 Con ello podemos revisar cada nodo específicamente.
 
+---
 
 #### Verídico
 
@@ -66,6 +67,7 @@ Este nodo básicamente lee los valores de la temperatura y humedad a través de 
 
 Puede revisar el código completo en `veridico.c`
 
+---
 
 #### Ataque
 
@@ -96,6 +98,7 @@ Cada cinco segundos envía señales al mismo servidor MQTT que el nodo verídico
 
 Puede revisar el código completo en `ataque.c`
 
+---
 
 ### Servidor MQTT
 
@@ -104,6 +107,8 @@ Debemos levantar el servidor MQTT al que redirigiremos las señales recibidas en
 ```bash
 brew services start mosquitto
 ```
+
+---
 
 ### Node-RED
 
@@ -123,6 +128,7 @@ Y se redirigen bajo los mismos tópicos con `mqtt-out` como se ve en la siguient
 
 ![MQTT Outputs](imagenes/6.png)
 
+---
 
 ### Recepción de señales
 
@@ -149,6 +155,8 @@ Como para `/ThinkIOT/hum` en la siguiente imagen:
 
 Se prueba que la implementación anterior sea accesible dentro de la red local.  
 El servidor MQTT está levantado en `172.20.10.2:1883`, y por lo tanto debería ser accesible por dispositivos dentro de la red local `172.20.10.0/24`.
+
+---
 
 ### Reconocimiento y enumeración
 
@@ -182,9 +190,10 @@ Host is up (0.30s latency).
 
 Por lo tanto, tenemos dos hosts levantados:
 
-```172.20.10.3```
-```172.20.10.4```
+- ```172.20.10.3```
+- ```172.20.10.4```
 
+---
 
 ### Escaneo
 
@@ -212,6 +221,7 @@ Nmap done: 1 IP address (1 host up) scanned in 1.82 seconds
 
 Vemos que los puertos respectivos son ``22``, ``80`` y ``443``, con una dirección MAC de ``AC:12:03:0F:F1:EF``. Adicionalmente comprobamos que es una máquina Intel.
 
+---
 
 ### Conexión a servidor MQTT
 
@@ -219,11 +229,13 @@ Comprobamos entonces que el host ``172.20.10.3`` puede conectarse al servidor MQ
 
 ![Wireshark](imagenes/10.png)
 
+---
 
 ## Técnicas de mitigación y verificación
 
 A partir de esta implementación, revisaremos la factibilidad de adoptar ciertas medidas de seguridad, principalmente de mitigación y verificación. Como próxima etapa, se podría implementar alguna de estas para tratar de evitar la amenaza propuesta en esta experiencia.
 
+---
 
 ### TLS y conexiones seguras
 
@@ -233,6 +245,7 @@ Por tanto, resultaría pertinente adaptarlo. A través de una firma, y también 
 
 Sin embargo, el proceso de firmar y encriptar añadiría *overhead*, además de un *payload* más grande, por lo que habría que encontrar un punto medio entre seguridad y factibilidad.
 
+---
 
 ### Autenticación y ACL por tópico
 
@@ -244,6 +257,7 @@ Ello podría ayudar si, por ejemplo, el ataque se centrara en corromper algún n
 
 Incluso podría ser útil en este caso, pero supongamos que este ataque duplica el nodo verídico, con sus permisos y demás, pero solo cambia el valor de la señal. Ahí pierde un poco de utilidad.
 
+---
 
 ### Revisar y validar payloads
 
@@ -253,6 +267,7 @@ En un entorno más real, en el que, por ejemplo, se reportan estas señales, res
 
 Sin embargo, esta validación adicional añadiría *overhead*.
 
+---
 
 ### Limitar rate de publicación
 
@@ -264,6 +279,7 @@ Por lo tanto, establecer un límite de publicación podría no evitar las señal
 
 En este escenario, resulta más sensato monitorear y validar las entradas para detectar comportamientos anómalos, en lugar de depender únicamente de un control de *rate-limit*.
 
+---
 
 ### Monitorear logs y desplegar IDS/IPS
 
@@ -275,6 +291,7 @@ Finalmente, estos están referidos a detectar amenazas y, más complejo aún, a 
 
 En este caso, monitoreo y detección es viable, pero la prevención resulta más costosa y difícil de implementar.
 
+---
 
 ### Inventario de dispositivos y parches de firmware
 
@@ -298,6 +315,7 @@ En el contexto del Internet de las Cosas y del uso de MQTT como protocolo de com
 La naturaleza de este tipo de comunicación busca ser ágil, continua y poco interrumpida, lo cual con frecuencia conduce a omitir o minimizar consideraciones de seguridad. Sin embargo, como se ha demostrado en esta experiencia, estas decisiones dejan abiertas puertas a amenazas y ataques.  
 
 El propósito de este ejercicio fue precisamente identificar y reflexionar sobre el equilibrio necesario entre eficiencia y seguridad en sistemas IoT basados en MQTT.
+
 
 ## Demostración
 
