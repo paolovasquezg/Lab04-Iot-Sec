@@ -1,8 +1,8 @@
 # Laboratorio 04: Iot Security
 
-En esta experiencia estaremos replicando la comunicación de dispositivos ESP32 [1] hacia un servidor MQTT [2] ejecutado a través Eclipse Mosquito [3], un broker MQTT. En ello, insertaremos un nodo ESP32 que envía señales anómalas simulando la inserción de un ataque en esta comunicación de internet de las cosas.
+En esta experiencia estaremos replicando la comunicación de dispositivos ESP32 `[1]` hacia un servidor MQTT `[2]` ejecutado a través Eclipse Mosquito `[3]`, un broker MQTT. En ello, insertaremos un nodo ESP32 que envía señales anómalas simulando la inserción de un ataque en esta comunicación de internet de las cosas.
 
-En sí la implementación se ve como en la imagen de abajo. A manera de overview, básicamente un par de nodos ESP32 enviando señales a un servidor MQTT proveído por Wokwi [4], ello recepcionado por el software Node-RED [5] y redirigido a otro servidor MQTT dentro de una red local para ser accedido por dispositivos dentro de esta. Revisaremos cada paso de esta implementación, la probaremos y adicionalmente plantearemos algunas medidas de seguridad al igual que extraeremos conclusiones. Se dejará una demostración de todo la arquitectura funcionando.
+En sí la implementación se ve como en la imagen de abajo. A manera de overview, básicamente un par de nodos ESP32 enviando señales a un servidor MQTT proveído por Wokwi `[4]`, ello recepcionado por el software Node-RED `[5]` y redirigido a otro servidor MQTT dentro de una red local para ser accedido por dispositivos dentro de esta. Revisaremos cada paso de esta implementación, la probaremos y adicionalmente plantearemos algunas medidas de seguridad al igual que extraeremos conclusiones. Se dejará una demostración de todo la arquitectura funcionando.
 
 ![Arquitectura IoT](imagenes/1.png)
 
@@ -143,7 +143,7 @@ Para esta etapa se comprueba con la misma IP que levanta el servidor, pero más 
 
 ![Recepción de señales](imagenes/7.png)
 
-Adicionalmente, a través de Wireshark [6], un software de código abierto para lectura de redes, podemos comprobar que las señales efectivamente se envían de `test.mosquitto.org:1883`, con IP `53.36.178.49`, hacia `172.20.10.2`. Podemos ver cómo se hace la lectura tanto de una señal verídica y anómala para `/ThinkIOT/temp` en la siguiente imagen:
+Adicionalmente, a través de Wireshark `[6]`, un software de código abierto para lectura de redes, podemos comprobar que las señales efectivamente se envían de `test.mosquitto.org:1883`, con IP `53.36.178.49`, hacia `172.20.10.2`. Podemos ver cómo se hace la lectura tanto de una señal verídica y anómala para `/ThinkIOT/temp` en la siguiente imagen:
 
 ![Wireshark /ThinkIOT/temp](imagenes/8.png)
 
@@ -239,7 +239,7 @@ A partir de esta implementación, revisaremos la factibilidad de adoptar ciertas
 
 ### TLS y conexiones seguras
 
-Transport Layer Security [7] es un protocolo criptográfico que nos provee cifrado, autenticación e integridad en el envío de información a través de la red. Usa conceptos de encriptación pública, firmas digitales y certificados.  
+Transport Layer Security `[7]` es un protocolo criptográfico que nos provee cifrado, autenticación e integridad en el envío de información a través de la red. Usa conceptos de encriptación pública, firmas digitales y certificados.  
 
 Por tanto, resultaría pertinente adaptarlo. A través de una firma, y también certificados, podríamos verificar la veracidad de las señales recibidas en el servidor MQTT, rechazando las anómalas. Ello puede complementarse con encriptación, para así evitar posibles lecturas no deseadas de las señales.  
 
@@ -251,7 +251,7 @@ Sin embargo, el proceso de firmar y encriptar añadiría *overhead*, además de 
 
 Retomando lo anterior, la autenticación resulta pertinente, pero aumenta el *overhead* y el *payload* enviado, por lo que se debe hallar un punto medio entre seguridad y rapidez.  
 
-Sobre el **Access Control List (ACL)** [8], se refiere a definir ciertas reglas para determinar los permisos de un cliente MQTT. Por ejemplo, qué nodos pueden publicar o leer señales.  
+Sobre el **Access Control List (ACL)** `[8]`, se refiere a definir ciertas reglas para determinar los permisos de un cliente MQTT. Por ejemplo, qué nodos pueden publicar o leer señales.  
 
 Ello podría ayudar si, por ejemplo, el ataque se centrara en corromper algún nodo y cambiar su funcionalidad, como publicar alguna otra señal.  
 
@@ -285,7 +285,7 @@ En este escenario, resulta más sensato monitorear y validar las entradas para d
 
 Implementar una arquitectura para monitorear logs y ver amenazas, para una implementación IoT tan simple como esta, resulta viable pero en cierta medida ilógico.  
 
-Se estaría a cierto nivel duplicando en complejidad la arquitectura MQTT solo para monitoreo. Esto va de la mano con el despliegue de **Intrusion Detection System (IDS)** [9] e **Intrusion Prevention System (IPS)** [9].  
+Se estaría a cierto nivel duplicando en complejidad la arquitectura MQTT solo para monitoreo. Esto va de la mano con el despliegue de **Intrusion Detection System (IDS)** [9] e **Intrusion Prevention System (IPS)** `[9]`.  
 
 Finalmente, estos están referidos a detectar amenazas y, más complejo aún, a prevenirlas.  
 
@@ -297,7 +297,7 @@ En este caso, monitoreo y detección es viable, pero la prevención resulta más
 
 Mantener un inventario de dispositivos puede ser útil si cada uno envía una señal diferente. Por ejemplo, si alguna señal se ve comprometida, podemos ligarla a su respectivo nodo o dispositivo.  
 
-En cuanto a **parches de firmware** [10], también es útil, pero al menos en este caso no tanto, porque no estamos comprometiendo el software de control, sino duplicando un nodo con una amenaza.  
+En cuanto a **parches de firmware** `[10]`, también es útil, pero al menos en este caso no tanto, porque no estamos comprometiendo el software de control, sino duplicando un nodo con una amenaza.  
 
 Aunque apliquemos un parche, este nodo duplicado no desaparecerá.
 
