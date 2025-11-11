@@ -119,7 +119,7 @@ Básicamente se tiene dos entradas `mqtt-in` que reciben los tópicos `/ThinkIOT
 
 ![MQTT Inputs](imagenes/5.png)
 
-Y se redirigen bajo los mismos tópicos como se ve en la siguiente imagen.
+Y se redirigen bajo los mismos tópicos con `mqtt-out` como se ve en la siguiente imagen.
 
 ![MQTT Outputs](imagenes/6.png)
 
